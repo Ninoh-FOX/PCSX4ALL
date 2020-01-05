@@ -667,9 +667,13 @@ void pad_update()
 			break;
 		case SDL_KEYDOWN:
 			switch (event.key.keysym.sym) {
+#ifndef PG2
+			case SDLK_RCTRL:
+#else
 			case SDLK_HOME:
 			case SDLK_F10:
-			case SDLK_RCTRL:
+#endif
+					
 				popup_menu = true;
 				break;
 #ifndef GCW_ZERO
@@ -710,6 +714,8 @@ void pad_update()
 					player_controller[0].joy_left_ax1 = (axisval + 0x8000) >> 8;
 				}
 				break;
+#ifdef PG2
+#else
 			case 2: /* X axis */
 				axisval = event.jaxis.value;
 				player_controller[0].joy_right_ax0 = (axisval + 0x8000) >> 8;
@@ -718,8 +724,11 @@ void pad_update()
 				axisval = event.jaxis.value;
 				player_controller[0].joy_right_ax1 = (axisval + 0x8000) >> 8;
 				break;
+#endif
 			}
 			break;
+#ifdef PG2
+#else
 		case SDL_JOYBUTTONDOWN:
 			if (event.jbutton.which == 0) {
 				pad1_buttons |= (1 << DKEY_L3);
@@ -727,6 +736,7 @@ void pad_update()
 				pad1_buttons |= (1 << DKEY_R3);
 			}
 			break;
+#endif
 		default: break;
 		}
 	}
