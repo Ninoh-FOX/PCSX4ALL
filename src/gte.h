@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2007 PCSX-df Team                                       *
- *   Copyright (C) 2009 Wei Mingzhi                                        *
+ *   Copyright (C) 2007 Ryan Schultz, PCSX-df Team, PCSX team              *
+ *   schultz.ryan@gmail.com, http://rschultz.ath.cx/code.php               *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -15,18 +15,48 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA 02111-1307 USA.           *
+ *   51 Franklin Steet, Fifth Floor, Boston, MA 02111-1307 USA.            *
  ***************************************************************************/
 
-#ifndef CDRISO_H
-#define CDRISO_H
+#ifndef __GTE_H__
+#define __GTE_H__
 
-void cdrIsoInit(void);
-int cdrIsoActive(void);
+#include "psxcommon.h"
+#include "r3000a.h"
 
-// Callback func ptr allows frontend GUI to choose CD to load
-extern void (CALLBACK *cdrIsoMultidiskCallback)(void);
-extern unsigned int cdrIsoMultidiskCount;
-extern unsigned int cdrIsoMultidiskSelect;
+void gteMFC2(void);
+void gteCFC2(void);
+void gteMTC2(void);
+void gteCTC2(void);
+void gteLWC2(void);
+void gteSWC2(void);
 
-#endif
+void gteRTPS(void);
+void gteOP(u32 gteop);
+void gteNCLIP(void);
+void gteDPCS(u32 gteop);
+void gteINTPL(u32 gteop);
+void gteMVMVA(u32 gteop);
+void gteNCDS(void);
+void gteNCDT(void);
+void gteCDP(void);
+void gteNCCS(void);
+void gteCC(void);
+void gteNCS(void);
+void gteNCT(void);
+void gteSQR(u32 gteop);
+void gteDCPL(u32 gteop);
+void gteDPCT(void);
+void gteAVSZ3(void);
+void gteAVSZ4(void);
+void gteRTPT(void);
+void gteGPF(u32 gteop);
+void gteGPL(u32 gteop);
+void gteNCCT(void);
+
+// for the recompiler
+u32 gtecalcMFC2(int reg);
+void gtecalcMTC2(u32 value, int reg);
+void gtecalcCTC2(u32 value, int reg);
+
+#endif /* __GTE_H__ */

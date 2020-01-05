@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2007 PCSX-df Team                                       *
- *   Copyright (C) 2009 Wei Mingzhi                                        *
+ *   Copyright (C) 2007 Ryan Schultz, PCSX-df Team, PCSX team              *
+ *   schultz.ryan@gmail.com, http://rschultz.ath.cx/code.php               *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -15,18 +15,26 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA 02111-1307 USA.           *
+ *   51 Franklin Steet, Fifth Floor, Boston, MA 02111-1307 USA.            *
  ***************************************************************************/
 
-#ifndef CDRISO_H
-#define CDRISO_H
+#ifndef __MDEC_H__
+#define __MDEC_H__
 
-void cdrIsoInit(void);
-int cdrIsoActive(void);
+#include "psxcommon.h"
+#include "r3000a.h"
+#include "psxhw.h"
+#include "psxdma.h"
 
-// Callback func ptr allows frontend GUI to choose CD to load
-extern void (CALLBACK *cdrIsoMultidiskCallback)(void);
-extern unsigned int cdrIsoMultidiskCount;
-extern unsigned int cdrIsoMultidiskSelect;
+void mdecInit(void);
+void mdecWrite0(u32 data);
+void mdecWrite1(u32 data);
+u32  mdecRead0(void);
+u32  mdecRead1(void);
+void psxDma0(u32 madr, u32 bcr, u32 chcr);
+void psxDma1(u32 madr, u32 bcr, u32 chcr);
+void mdec0Interrupt(void);
+void mdec1Interrupt(void);
+int  mdecFreeze(void* f, FreezeMode mode);
 
 #endif
