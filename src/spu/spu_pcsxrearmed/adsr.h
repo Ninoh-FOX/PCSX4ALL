@@ -1,5 +1,5 @@
 /***************************************************************************
-                            xa.h  -  description
+                           adsr.h  -  description
                              -------------------
     begin                : Wed May 15 2002
     copyright            : (C) 2002 by Pete Bernert
@@ -15,6 +15,5 @@
  *                                                                         *
  ***************************************************************************/
 
-INLINE void MixXA(void);
-INLINE void FeedXA(xa_decode_t *xap);
-INLINE int  FeedCDDA(unsigned char *pcm, int nBytes);
+INLINE void StartADSR(int ch);
+INLINE int  MixADSR(int ch);

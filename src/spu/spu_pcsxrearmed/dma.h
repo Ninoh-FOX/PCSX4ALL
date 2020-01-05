@@ -1,10 +1,11 @@
 /***************************************************************************
-                            xa.h  -  description
+                            dma.h  -  description
                              -------------------
     begin                : Wed May 15 2002
     copyright            : (C) 2002 by Pete Bernert
     email                : BlackDove@addcom.de
  ***************************************************************************/
+
 /***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -15,6 +16,16 @@
  *                                                                         *
  ***************************************************************************/
 
-INLINE void MixXA(void);
-INLINE void FeedXA(xa_decode_t *xap);
-INLINE int  FeedCDDA(unsigned char *pcm, int nBytes);
+//*************************************************************************//
+// History of changes:
+//
+// 2002/05/15 - Pete
+// - generic cleanup for the Peops release
+//
+//*************************************************************************//
+
+
+unsigned short CALLBACK SPUreadDMA(void);
+void CALLBACK SPUreadDMAMem(unsigned short * pusPSXMem, int iSize, unsigned int cycles);
+void CALLBACK SPUwriteDMA(unsigned short val);
+void CALLBACK SPUwriteDMAMem(unsigned short * pusPSXMem,int iSize, unsigned int cycles);
