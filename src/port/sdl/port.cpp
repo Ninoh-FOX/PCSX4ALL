@@ -667,7 +667,7 @@ void pad_update()
 			break;
 		case SDL_KEYDOWN:
 			switch (event.key.keysym.sym) {
-#ifndef PG2
+#ifdef PG2
 			case SDLK_RCTRL:
 #else
 			case SDLK_HOME:
