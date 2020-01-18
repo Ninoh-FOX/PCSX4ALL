@@ -626,13 +626,13 @@ void joy_init()
 
 	player_controller[0].joy_left_ax0 = 127;
 	player_controller[0].joy_left_ax1 = 127;
-	player_controller[0].joy_right_ax0 = 127;
-	player_controller[0].joy_right_ax1 = 127;
+	//player_controller[0].joy_right_ax0 = 127;
+	//player_controller[0].joy_right_ax1 = 127;
 
-	player_controller[0].Vib[0] = 0;
-	player_controller[0].Vib[1] = 0;
-	player_controller[0].VibF[0] = 0;
-	player_controller[0].VibF[1] = 0;
+	//player_controller[0].Vib[0] = 0;
+	//player_controller[0].Vib[1] = 0;
+	//player_controller[0].VibF[0] = 0;
+	//player_controller[0].VibF[1] = 0;
 
 	//player_controller[0].id = 0x41;
 	//player_controller[0].pad_mode = 0;
