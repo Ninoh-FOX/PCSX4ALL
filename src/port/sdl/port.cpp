@@ -556,6 +556,14 @@ static struct {
 	{ SDLK_KP_PERIOD,	DKEY_R3 },
 	{ SDLK_ESCAPE,		DKEY_SELECT },
 #else
+#ifdef GCW_ZERO
+	{ SDLK_LSHIFT,		DKEY_SQUARE },
+	{ SDLK_LCTRL,		DKEY_CIRCLE },
+	{ SDLK_SPACE,		DKEY_TRIANGLE },
+	{ SDLK_LALT,		DKEY_CROSS },
+	{ SDLK_TAB,			DKEY_L1 },
+	{ SDLK_BACKSPACE,	DKEY_R1 },
+#else
 	{ SDLK_a,		DKEY_SQUARE },
 	{ SDLK_x,		DKEY_CIRCLE },
 	{ SDLK_s,		DKEY_TRIANGLE },
@@ -565,6 +573,7 @@ static struct {
 	{ SDLK_e,		DKEY_L2 },
 	{ SDLK_r,		DKEY_R2 },
 	{ SDLK_BACKSPACE,	DKEY_SELECT },
+#endif
 #endif
 #endif
 	{ SDLK_RETURN,		DKEY_START },
@@ -753,7 +762,56 @@ void pad_update()
 		default: break;
 		}
 	}
+	
+#if defined(GCW_ZERO) && !defined(RG350) && !defined(PG2)
+	// SELECT+B for psx's SELECT
+	if (keys[SDLK_ESCAPE] && keys[SDLK_LALT]) {
+		pad1 &= ~(1 << DKEY_SELECT);
+		pad1 |= (1 << DKEY_CROSS);
+	} else {
+		pad1 |= (1 << DKEY_SELECT);
+	}
 
+	// SELECT+L1 for psx's L2
+	if (keys[SDLK_ESCAPE] && keys[SDLK_TAB]) {
+		pad1 &= ~(1 << DKEY_L2);
+		pad1 |= (1 << DKEY_L1);
+	} else {
+		pad1 |= (1 << DKEY_L2);
+	}
+
+	// SELECT+R1 for R2
+	if (keys[SDLK_ESCAPE] && keys[SDLK_BACKSPACE]) {
+		pad1 &= ~(1 << DKEY_R2);
+		pad1 |= (1 << DKEY_R1);
+	} else {
+		pad1 |= (1 << DKEY_R2);
+	}
+
+	// SELECT+START for menu
+	if (keys[SDLK_ESCAPE] && keys[SDLK_RETURN] && !keys[SDLK_LALT]) {
+		//Sync and close any memcard files opened for writing
+		//TODO: Disallow entering menu until they are synced/closed
+		// automatically, displaying message that write is in progress.
+		sioSyncMcds();
+
+		emu_running = false;
+		pl_pause();    // Tell plugin_lib we're pausing emu
+		GameMenu();
+		emu_running = true;
+		pad1 |= (1 << DKEY_START);
+		pad1 |= (1 << DKEY_CROSS);
+		video_clear();
+		video_flip();
+		video_clear();
+#ifdef SDL_TRIPLEBUF
+		video_flip();
+		video_clear();
+#endif
+		pl_resume();    // Tell plugin_lib we're reentering emu
+	}
+#endif
+		
 	if (Config.AnalogArrow == 1) {
 		if ((pad1_buttons & (1 << DKEY_UP)) && (analog1 & ANALOG_UP)) {
 			pad1_buttons &= ~(1 << DKEY_UP);
