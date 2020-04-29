@@ -543,7 +543,7 @@ static struct {
 	{ SDLK_RALT,	    DKEY_R2 },
 	{ SDLK_ESCAPE,		DKEY_SELECT },
 #else
-#ifdef GCW_ZERO
+#ifdef RG350
 	{ SDLK_LSHIFT,		DKEY_SQUARE },
 	{ SDLK_LCTRL,		DKEY_CIRCLE },
 	{ SDLK_SPACE,		DKEY_TRIANGLE },
@@ -606,7 +606,7 @@ void Set_Controller_Mode()
 		break;
 		/* DualShock, required for Ape Escape. */
 	case 2: 
-		player_controller[0].id = 0x73;
+		player_controller[0].id = 0x41;
 		player_controller[0].pad_mode = 0;
 		player_controller[0].pad_controllertype = PSE_PAD_TYPE_ANALOGPAD;
 		break;
