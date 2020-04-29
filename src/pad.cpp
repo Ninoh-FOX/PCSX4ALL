@@ -28,7 +28,7 @@
 */
 
 #ifdef RUMBLE
-#include <shake.h>
+#include "shake.h"
 extern Shake_Device *device;
 extern int id_shake_level[16];
 
