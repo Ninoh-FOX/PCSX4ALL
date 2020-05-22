@@ -542,8 +542,7 @@ static struct {
 	{ SDLK_RSHIFT,		DKEY_L2 },
 	{ SDLK_RALT,	    DKEY_R2 },
 	{ SDLK_ESCAPE,		DKEY_SELECT },
-#else
-#ifdef RG350
+#elif RG350
 	{ SDLK_LSHIFT,		DKEY_SQUARE },
 	{ SDLK_LCTRL,		DKEY_CIRCLE },
 	{ SDLK_SPACE,		DKEY_TRIANGLE },
@@ -552,11 +551,13 @@ static struct {
 	{ SDLK_BACKSPACE,	DKEY_R1 },
 	{ SDLK_PAGEUP,		DKEY_L2 },
 	{ SDLK_PAGEDOWN,	DKEY_R2 },
+#ifdef PG2V2
+#else
 	{ SDLK_KP_DIVIDE,	DKEY_L3 },
 	{ SDLK_KP_PERIOD,	DKEY_R3 },
+#endif
 	{ SDLK_ESCAPE,		DKEY_SELECT },
-#else
-#ifdef GCW_ZERO
+#elif GCW_ZERO
 	{ SDLK_LSHIFT,		DKEY_SQUARE },
 	{ SDLK_LCTRL,		DKEY_CIRCLE },
 	{ SDLK_SPACE,		DKEY_TRIANGLE },
@@ -573,8 +574,6 @@ static struct {
 	{ SDLK_e,		DKEY_L2 },
 	{ SDLK_r,		DKEY_R2 },
 	{ SDLK_BACKSPACE,	DKEY_SELECT },
-#endif
-#endif
 #endif
 	{ SDLK_RETURN,		DKEY_START },
 	{ 0, 0 }
@@ -691,6 +690,8 @@ void pad_update()
 			switch (event.key.keysym.sym) {
 #ifdef PG2
 			case SDLK_RCTRL:
+#elif PG2V2
+			case SDLK_RCTRL:
 #else
 			case SDLK_HOME:
 			case SDLK_F10:
@@ -737,6 +738,7 @@ void pad_update()
 				}
 				break;
 #ifdef PG2
+#elif PG2V2
 #else
 			case 2: /* X axis */
 				axisval = event.jaxis.value;
@@ -750,6 +752,7 @@ void pad_update()
 			}
 			break;
 #ifdef PG2
+#elif PG2V2
 #else
 		case SDL_JOYBUTTONDOWN:
 			if (event.jbutton.which == 0) {

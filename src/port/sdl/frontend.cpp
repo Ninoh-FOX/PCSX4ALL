@@ -1983,14 +1983,14 @@ static void ShowMenu(MENU *menu)
 	port_printf(menu->x - 3 * 8, menu->y + cur * 10, "-->");
 
 	// general copyrights info
-#if defined(RG350)
+#if defined(RG350)&&!defined(PG2V2)
 	port_printf(8 * 8, 10, "pcsx4all 2.4 for RG350");
-#else
-#if defined(PG2)
-	port_printf(8 * 8, 10, "pcsx4all 2.4 for POCKET GO 2");
+#elif defined(RG350)&&defined(PG2V2)
+	port_printf(8 * 8, 10, "pcsx4all 2.4 for POCKETGO2 v2");
+#elif defined(PG2)
+	port_printf(8 * 8, 10, "pcsx4all 2.4 for POCKETGO2");
 #else
 	port_printf(8 * 8, 10, "pcsx4all 2.4 for GCW-Zero");
-#endif
 #endif
 	port_printf(4 * 8, 20, "Built on " __DATE__ " at " __TIME__);
 	if (CdromId[0]) {

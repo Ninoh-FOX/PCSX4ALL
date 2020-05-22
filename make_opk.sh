@@ -21,6 +21,7 @@ EOF
 # create opk
 FLIST="pcsx4all"
 FLIST="${FLIST} default.gcw0.desktop"
+FLIST="${FLIST} romw.bin"
 FLIST="${FLIST} src/port/sdl/pcsxr-icon-small.png"
 
 rm -f ${OPK_NAME}
