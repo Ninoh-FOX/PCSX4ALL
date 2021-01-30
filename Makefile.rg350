@@ -39,7 +39,7 @@ LDFLAGS := $(SDL_LIBS) -lSDL_mixer -lSDL_image -lrt -lz -lshake
 ifdef A320
 	C_ARCH = -mips32 -msoft-float -DGCW_ZERO -DDYNAREC_SKIP_DCACHE_FLUSH -DTMPFS_MIRRORING -DTMPFS_DIR=\"/tmp\"
 else
-	C_ARCH = -mips32r2 -DGCW_ZERO -DRUMBLE -DRG350 -D__CHEAT_H__ -DSHMEM_MIRRORING
+	C_ARCH = -mips32r2 -DGCW_ZERO -DRUMBLE -DRG350 -DSHMEM_MIRRORING
 endif
 
 ifeq ($(DEV),1)
