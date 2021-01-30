@@ -21,6 +21,8 @@ SPU   = spu_pcsxrearmed
 
 RECOMPILER = mips
 
+HAVE_CHD = 1
+
 RM     = rm -f
 MD     = mkdir
 CC     = mipsel-linux-gcc
@@ -205,6 +207,79 @@ endif
 endif
 #******************************************
 # spu_pcsxrearmed END
+#******************************************
+
+#******************************************
+# libchdr section BEGIN
+#******************************************
+ifeq "$(HAVE_CHD)" "1"
+
+OBJDIRS +=  \
+	obj/external_lib/crypto \
+	obj/external_lib/flac-1.3.2/src/libFLAC \
+	obj/external_lib/lzma-16.04/C \
+	obj/external_lib/libchdr
+
+OBJS += \
+	obj/external_lib/crypto/md5.o \
+	obj/external_lib/crypto/sha1.o \
+	obj/external_lib/flac-1.3.2/src/libFLAC/bitmath.o \
+	obj/external_lib/flac-1.3.2/src/libFLAC/bitreader.o \
+	obj/external_lib/flac-1.3.2/src/libFLAC/cpu.o \
+	obj/external_lib/flac-1.3.2/src/libFLAC/crc.o \
+	obj/external_lib/flac-1.3.2/src/libFLAC/fixed.o \
+	obj/external_lib/flac-1.3.2/src/libFLAC/fixed_intrin_sse2.o \
+	obj/external_lib/flac-1.3.2/src/libFLAC/fixed_intrin_ssse3.o \
+	obj/external_lib/flac-1.3.2/src/libFLAC/float.o \
+	obj/external_lib/flac-1.3.2/src/libFLAC/format.o \
+	obj/external_lib/flac-1.3.2/src/libFLAC/lpc.o \
+	obj/external_lib/flac-1.3.2/src/libFLAC/lpc_intrin_avx2.o \
+	obj/external_lib/flac-1.3.2/src/libFLAC/lpc_intrin_sse2.o \
+	obj/external_lib/flac-1.3.2/src/libFLAC/lpc_intrin_sse41.o \
+	obj/external_lib/flac-1.3.2/src/libFLAC/lpc_intrin_sse.o \
+	obj/external_lib/flac-1.3.2/src/libFLAC/md5.o \
+	obj/external_lib/flac-1.3.2/src/libFLAC/memory.o \
+	obj/external_lib/flac-1.3.2/src/libFLAC/metadata_iterators.o \
+	obj/external_lib/flac-1.3.2/src/libFLAC/metadata_object.o \
+	obj/external_lib/flac-1.3.2/src/libFLAC/stream_decoder.o \
+	obj/external_lib/flac-1.3.2/src/libFLAC/window.o \
+	obj/external_lib/lzma-16.04/C/Alloc.o \
+	obj/external_lib/lzma-16.04/C/Bra86.o \
+	obj/external_lib/lzma-16.04/C/Bra.o \
+	obj/external_lib/lzma-16.04/C/BraIA64.o \
+	obj/external_lib/lzma-16.04/C/CpuArch.o \
+	obj/external_lib/lzma-16.04/C/Delta.o \
+	obj/external_lib/lzma-16.04/C/LzFind.o \
+	obj/external_lib/lzma-16.04/C/Lzma86Dec.o \
+	obj/external_lib/lzma-16.04/C/Lzma86Enc.o \
+	obj/external_lib/lzma-16.04/C/LzmaDec.o \
+	obj/external_lib/lzma-16.04/C/LzmaEnc.o \
+	obj/external_lib/lzma-16.04/C/LzmaLib.o \
+	obj/external_lib/lzma-16.04/C/Sort.o \
+	obj/external_lib/libchdr/bitstream.o \
+	obj/external_lib/libchdr/cdrom.o \
+	obj/external_lib/libchdr/chd.o \
+	obj/external_lib/libchdr/flac.o \
+	obj/external_lib/libchdr/huffman.o \
+
+CFLAGS += \
+	-Isrc/external_lib/crypto \
+	-Isrc/external_lib/flac-1.3.2/include \
+	-Isrc/external_lib/flac-1.3.2/src/libFLAC/include \
+	-Isrc/external_lib/lzma-16.04/C \
+	-Isrc/external_lib/libchdr
+
+CFLAGS += \
+	-DHAVE_CHD \
+	-D'PACKAGE_VERSION="1.3.2"' -DFLAC__HAS_OGG=0 -DFLAC__NO_DLL \
+	-DHAVE_LROUND -DHAVE_STDINT_H -DHAVE_STDLIB_H -DHAVE_SYS_PARAM_H \
+	-D_7ZIP_ST
+
+LDFLAGS += -lm
+
+endif
+#******************************************
+# libchdr section END
 #******************************************
 
 CXXFLAGS := $(CFLAGS) -fno-rtti -fno-exceptions

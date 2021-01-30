@@ -188,6 +188,9 @@ static const char *wildcards[] = {
 	//"z", "bz", "znx",
 
 	"bin", "img", "mdf", "iso", "cue",
+#ifdef HAVE_CHD
+	"chd",
+#endif
 	"pbp", "cbn", NULL
 };
 
