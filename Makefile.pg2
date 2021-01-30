@@ -24,7 +24,7 @@ RECOMPILER = mips
 HAVE_CHD = 1
 
 RM     = rm -f
-MD     = mkdir
+MD     = mkdir -p
 CC     = mipsel-linux-gcc
 CXX    = mipsel-linux-g++
 LD     = mipsel-linux-g++
