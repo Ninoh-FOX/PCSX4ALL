@@ -61,6 +61,8 @@ const char *bios_file_get();
 void bios_file_set(const char *filename);
 void check_spec_bios();
 
+int set_rumble_gain(unsigned gain);
+
 int SelectGame();
 int GameMenu();
 

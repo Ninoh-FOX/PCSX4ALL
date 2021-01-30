@@ -269,6 +269,11 @@ void config_load()
 		} else if (!strcmp(line, "Analog_Mode")) {
 			sscanf(arg, "%d", &value);
 			Config.AnalogMode = value;
+		} else if (!strcmp(line, "RumbleGain")) {
+			sscanf(arg, "%d", &value);
+			if (value < 0 || value > 100)
+				value = 100;
+			Config.RumbleGain = value;
 		} else if (!strcmp(line, "RCntFix")) {
 			sscanf(arg, "%d", &value);
 			Config.RCntFix = value;
@@ -434,6 +439,7 @@ void config_save()
 		   "SlowBoot %d\n"
 		   "AnalogArrow %d\n"
 		   "Analog_Mode %d\n"
+		   "RumbleGain %d\n"
 		   "RCntFix %d\n"
 		   "VSyncWA %d\n"
 		   "Cpu %d\n"
@@ -449,7 +455,7 @@ void config_save()
 		   "FrameSkip %d\n"
 		   "VideoScaling %d\n",
 		   CONFIG_VERSION, Config.Xa, Config.Mdec, Config.PsxAuto, Config.Cdda,
-		   Config.HLE, Config.SlowBoot, Config.AnalogArrow, Config.AnalogMode,
+		   Config.HLE, Config.SlowBoot, Config.AnalogArrow, Config.AnalogMode, Config.RumbleGain,
 		   Config.RCntFix, Config.VSyncWA, Config.Cpu, Config.PsxType,
 		   Config.McdSlot1, Config.McdSlot2, Config.SpuIrq, Config.SyncAudio,
 		   Config.SpuUpdateFreq, Config.ForcedXAUpdates, Config.ShowFps,
@@ -962,6 +968,21 @@ with mingw build. */
 #undef main
 #endif
 
+#ifdef RUMBLE
+int set_rumble_gain(unsigned gain)
+{
+	if (!device) {
+		return 0;
+	}
+
+	if (Shake_SetGain(device, (int)gain) != SHAKE_OK) {
+		return 0;
+	}
+
+	return 1;
+}
+#endif
+
 void Rumble_Init() {
 #ifdef RUMBLE
 	static bool rumble_init = false;
@@ -988,6 +1009,7 @@ void Rumble_Init() {
 		}		
 		
 	}
+	
 	printf("Rumble initialized !\n");
 
 	rumble_init = true;
@@ -1082,6 +1104,7 @@ int main (int argc, char **argv)
 #endif
 	Config.SlowBoot=0; /* 0=skip bios logo sequence on boot  1=show sequence (does not apply to HLE) */
 	Config.RCntFix=0; /* 1=Parasite Eve 2, Vandal Hearts 1/2 Fix */
+	Config.RumbleGain = 100; /* [0,100]-Rumble effect strength */
 	Config.VSyncWA=0; /* 1=InuYasha Sengoku Battle Fix */
 	Config.SpuIrq=0; /* 1=SPU IRQ always on, fixes some games */
 

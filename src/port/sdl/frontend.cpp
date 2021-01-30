@@ -1232,6 +1232,37 @@ static char* Analog_Mode_show()
 	return buf;
 }
 
+#ifdef RUMBLE
+static int RumbleGain_alter(u32 keys)
+{
+	unsigned last_rumble_gain = Config.RumbleGain;
+	if (keys & KEY_RIGHT) {
+		if (Config.RumbleGain <= 95) {
+			Config.RumbleGain += 5;
+		} else {
+			Config.RumbleGain = 100;
+		}
+	} else if (keys & KEY_LEFT) {
+		if (Config.RumbleGain >= 5) {
+			Config.RumbleGain -= 5;
+		} else {
+			Config.RumbleGain = 0;
+		}
+	}
+	if (Config.RumbleGain != last_rumble_gain) {
+		set_rumble_gain(Config.RumbleGain);
+	}
+	return 0;
+}
+
+static char* RumbleGain_show()
+{
+	static char buf[16] = "\0";
+	sprintf(buf, "%d%%", Config.RumbleGain);
+	return buf;
+}
+#endif
+
 static char *RCntFix_show()
 {
 	static char buf[16] = "\0";
@@ -1324,6 +1355,7 @@ static int settings_defaults()
 	Config.SlowBoot = 0;
 	Config.AnalogArrow = 0;
 	Config.AnalogMode = 2;
+	Config.RumbleGain = 100;
 	Config.RCntFix = 0;
 	Config.VSyncWA = 0;
 #ifdef PSXREC
@@ -1348,6 +1380,9 @@ static MENUITEM gui_SettingsItems[] = {
 	{(char *)"Skip BIOS logos    ", NULL, &SlowBoot_alter, &SlowBoot_show, &SlowBoot_hint},
 	{(char *)"Map L-stick to Dpad", NULL, &AnalogArrow_alter, &AnalogArrow_show, &AnalogArrow_hint},
 	{(char *)"Analog Mode        ", NULL, &Analog_Mode_alter, &Analog_Mode_show, &Analog_Mode_hint},
+#ifdef RUMBLE
+	{(char *)"Rumble Strength    ", NULL, &RumbleGain_alter, &RumbleGain_show, NULL},
+#endif
 	{(char *)"RCntFix            ", NULL, &RCntFix_alter, &RCntFix_show, &RCntFix_hint},
 	{(char *)"VSyncWA            ", NULL, &VSyncWA_alter, &VSyncWA_show, &VSyncWA_hint},
 	{(char *)"Memory card Slot1  ", NULL, &McdSlot1_alter, &McdSlot1_show, NULL},
