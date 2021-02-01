@@ -1033,6 +1033,35 @@ static int gui_swap_cd(void)
 	return 1;
 }
 
+extern char CdromName[PATH_MAX];
+
+static int gui_save_config_override(void)
+{
+	if (config_override_enabled && !string_is_empty(CdromName)) {
+		if (config_save(CdromName)) {
+			config_override_active = 1;
+		}
+	}
+	/* Always return zero - we don't want the
+	 * menu to close when selecting this option */
+	return 0;
+}
+
+static char *gui_save_config_override_show(void)
+{
+	static char buf[16] = "\0";
+	if (!config_override_enabled) {
+		sprintf(buf, "%s", "[disabled]");
+	} else if (config_override_active) {
+		sprintf(buf, "%s", "[saved]");
+	}
+	return buf;
+}
+
+static void gui_save_config_override_hint(void) {
+	port_printf(4 * 8, 10 * 8, "Save settings for current disk");
+}
+
 static MENUITEM gui_GameMenuItems[] =
 {
   {(char *)"Swap CD", &gui_swap_cd, NULL, NULL, NULL},
@@ -1041,6 +1070,7 @@ static MENUITEM gui_GameMenuItems[] =
   {(char *)"GPU settings", &gui_GPUSettings, NULL, NULL, NULL},
   {(char *)"SPU settings", &gui_SPUSettings, NULL, NULL, NULL},
   {(char *)"Core settings", &gui_Settings, NULL, NULL, NULL},
+  {(char *)"Config Override", &gui_save_config_override, NULL, &gui_save_config_override_show, &gui_save_config_override_hint},
   {(char *)"Quit", &gui_Quit, NULL, NULL, NULL},
   {0}
 };
@@ -1052,6 +1082,7 @@ static MENUITEM gui_GameMenuItems_WithCheats[] =
   {(char *)"GPU settings", &gui_GPUSettings, NULL, NULL, NULL},
   {(char *)"SPU settings", &gui_SPUSettings, NULL, NULL, NULL},
   {(char *)"Core settings", &gui_Settings, NULL, NULL, NULL},
+  {(char *)"Config Override", &gui_save_config_override, NULL, &gui_save_config_override_show, &gui_save_config_override_hint},
   {(char *)"Cheats", &gui_Cheats, NULL, NULL, NULL},
   {(char *)"Quit", &gui_Quit, NULL, NULL, NULL},
   {0}
@@ -1321,7 +1352,15 @@ static int McdSlot1_alter(u32 keys)
 static char *McdSlot1_show()
 {
 	static char buf[16] = "\0";
-	sprintf(buf, "mcd%03d.mcr", (int)Config.McdSlot1);
+	if (Config.McdSlot1 == 0) {
+		if (string_is_empty(CdromId)) {
+			strcpy(buf, "per-disk");
+		} else {
+			sprintf(buf, "%s.1", CdromId);
+		}
+	} else {
+		sprintf(buf, "mcd%03d.mcr", (int)Config.McdSlot1);
+	}
 	return buf;
 }
 
@@ -1345,7 +1384,15 @@ static int McdSlot2_alter(u32 keys)
 static char *McdSlot2_show()
 {
 	static char buf[16] = "\0";
-	sprintf(buf, "mcd%03d.mcr", (int)Config.McdSlot2);
+	if (Config.McdSlot2 == 0) {
+		if (string_is_empty(CdromId)) {
+			strcpy(buf, "per-disk");
+		} else {
+			sprintf(buf, "%s.2", CdromId);
+		}
+	} else {
+		sprintf(buf, "mcd%03d.mcr", (int)Config.McdSlot2);
+	}
 	return buf;
 }
 

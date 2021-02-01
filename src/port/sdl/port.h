@@ -35,7 +35,34 @@ extern struct ps1_controller player_controller[2];
 static inline int fsync(int f) { return 0; }
 #endif
 
+#ifndef INLINE
+#if defined(__WIN32__) || defined(__INTEL_COMPILER)
+#define INLINE __inline
+#elif defined(__STDC_VERSION__) && __STDC_VERSION__>=199901L
+#define INLINE inline
+#elif defined(__GNUC__)
+#define INLINE __inline__
+#else
+#define INLINE
+#endif
+#endif
+
+INLINE int string_is_empty(const char *data)
+{
+	return (!data || (*data == '\0')) ? 1 : 0;
+}
+
+int path_file_exists(const char *path);
+void set_cdrom_name(const char *filepath);
+
 #define	CONFIG_VERSION	0
+
+void config_get_override_filename(const char *diskname, char *filename);
+int config_load(const char *diskname);
+int config_save(const char *diskname);
+
+extern int config_override_enabled;
+extern int config_override_active;
 
 unsigned get_ticks(void);
 void wait_ticks(unsigned s);

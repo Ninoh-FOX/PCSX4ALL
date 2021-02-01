@@ -34,6 +34,7 @@
 // Credit goes to Notaz / PCSX Rearmed, senquack
 
 #include "cdrom.h"
+#include "cdriso.h"
 #include "plugin_lib.h"
 #include "ppf.h"
 #include "psxdma.h"
@@ -319,6 +320,26 @@ void cdrLidSeekInterrupt()
 			// closed now
 			CheckCdrom();
 
+			/* Check whether this is *not* a multi-cd image */
+			if (cdrIsoMultidiskCount == 1) {
+				/* If we are using per-disk memory cards,
+				 * reload them */
+				if (Config.McdSlot1 == 0) {
+					update_memcards(1);
+				}
+				if (Config.McdSlot2 == 0) {
+					update_memcards(2);
+				}
+				/* If config overrides are enabled, update
+				 * CdromName */
+				if (config_override_enabled) {
+					const char *iso_file = GetIsoFile();
+					if (iso_file && (*iso_file != '\0')) {
+						set_cdrom_name(iso_file);
+					}
+				}
+			}
+
 			// cdr.StatP STATUS_SHELLOPEN is "sticky"
 			// and is only cleared by CdlNop
 
@@ -586,6 +607,7 @@ void cdrInterrupt()
 	int start_rotating = 0;
 	int error = 0;
 	int delay;
+	unsigned int seekTime = 0;
 
 	// Reschedule IRQ
 	if (cdr.Stat) {
@@ -956,6 +978,8 @@ void cdrInterrupt()
 		case CdlReadN:
 		case CdlReadS:
 			if (cdr.SetlocPending) {
+				seekTime = abs((int)msf2sec(cdr.SetSectorPlay) - (int)msf2sec(cdr.SetSector)) * (cdReadTime / 200);
+				if(seekTime > 1000000) seekTime = 1000000;
 				memcpy(cdr.SetSectorPlay, cdr.SetSector, 4);
 				cdr.SetlocPending = 0;
 			}
@@ -995,7 +1019,7 @@ void cdrInterrupt()
 				// - fix cutscene speech (startup)
 
 				// ??? - use more accurate seek time later
-				CDREAD_INT((cdr.Mode & 0x80) ? (cdReadTime / 2) : cdReadTime * 1);
+				CDREAD_INT(((cdr.Mode & 0x80) ? (cdReadTime / 2) : cdReadTime * 1) + seekTime);
 			} else {
 				cdr.StatP |= STATUS_READ;
 				cdr.StatP &= ~STATUS_SEEK;
