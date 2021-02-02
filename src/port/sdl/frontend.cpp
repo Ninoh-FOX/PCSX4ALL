@@ -1297,6 +1297,31 @@ static char* RumbleGain_show()
 }
 #endif
 
+#ifndef __WIN32__
+
+static int AsyncCD_alter(u32 keys)
+{
+	if (keys & KEY_RIGHT) {
+		if (Config.AsyncCD == false) Config.AsyncCD = true;
+	} else if (keys & KEY_LEFT) {
+		if (Config.AsyncCD == true) Config.AsyncCD = false;
+	}
+	return 0;
+}
+
+static char *AsyncCD_show()
+{
+	static char buf[16] = "\0";
+	sprintf(buf, "%s", Config.AsyncCD == true ? "Async" : "Sync");
+	return buf;
+}
+
+static void AsyncCD_hint() {
+	port_printf(2 * 8, 10 * 8, "Async: Reduce stutter (restart req.)");
+}
+
+#endif
+
 static char *RCntFix_show()
 {
 	static char buf[16] = "\0";
@@ -1352,15 +1377,7 @@ static int McdSlot1_alter(u32 keys)
 static char *McdSlot1_show()
 {
 	static char buf[16] = "\0";
-	if (Config.McdSlot1 == 0) {
-		if (string_is_empty(CdromId)) {
-			strcpy(buf, "per-disk");
-		} else {
-			sprintf(buf, "%s.1", CdromId);
-		}
-	} else {
-		sprintf(buf, "mcd%03d.mcr", (int)Config.McdSlot1);
-	}
+	sprintf(buf, "mcd%03d.mcr", (int)Config.McdSlot1);
 	return buf;
 }
 
@@ -1384,15 +1401,7 @@ static int McdSlot2_alter(u32 keys)
 static char *McdSlot2_show()
 {
 	static char buf[16] = "\0";
-	if (Config.McdSlot2 == 0) {
-		if (string_is_empty(CdromId)) {
-			strcpy(buf, "per-disk");
-		} else {
-			sprintf(buf, "%s.2", CdromId);
-		}
-	} else {
-		sprintf(buf, "mcd%03d.mcr", (int)Config.McdSlot2);
-	}
+	sprintf(buf, "mcd%03d.mcr", (int)Config.McdSlot2);
 	return buf;
 }
 
@@ -1406,6 +1415,9 @@ static int settings_defaults()
 	Config.AnalogArrow = 0;
 	Config.AnalogMode = 2;
 	Config.RumbleGain = 100;
+#ifndef __WIN32__
+	Config.AsyncCD = 0;
+#endif
 	Config.RCntFix = 0;
 	Config.VSyncWA = 0;
 #ifdef PSXREC
@@ -1432,6 +1444,9 @@ static MENUITEM gui_SettingsItems[] = {
 	{(char *)"Analog Mode        ", NULL, &Analog_Mode_alter, &Analog_Mode_show, &Analog_Mode_hint},
 #ifdef RUMBLE
 	{(char *)"Rumble Strength    ", NULL, &RumbleGain_alter, &RumbleGain_show, NULL},
+#endif
+#ifndef __WIN32__
+	{(char *)"CD Access          ", NULL, &AsyncCD_alter, &AsyncCD_show, &AsyncCD_hint},
 #endif
 	{(char *)"RCntFix            ", NULL, &RCntFix_alter, &RCntFix_show, &RCntFix_hint},
 	{(char *)"VSyncWA            ", NULL, &VSyncWA_alter, &VSyncWA_show, &VSyncWA_hint},
@@ -1545,7 +1560,7 @@ static void videoscaling_hint() {
 		port_printf(4 * 8, 10 * 8, "Hardware, POWER+A to switch aspect");
 		break;
 	case 1:
-		port_printf(7 * 8, 10 * 8, "Nearest filter");
+		port_printf(7 * 8, 10 * 8, "Software filter");
 		break;
 	}
 }

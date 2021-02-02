@@ -134,12 +134,13 @@ typedef struct {
 	boolean AnalogArrow; /* 0=disable 1=use L-stick as D-pad arrow key */
 	u8 AnalogMode;   /* 0-Digital 1-DualAnalog 2-DualShock */
 	u8 RumbleGain;   /* [0,100]-Rumble effect strength */
+	boolean AsyncCD; /* 0=Synchronous Cd access, 1=Asynchronous Cd access */
 	boolean RCntFix; /* 1=Parasite Eve 2, Vandal Hearts 1/2 Fix */
 	boolean VSyncWA; /* 1=InuYasha Sengoku Battle Fix */
 	u8 Cpu; /* 0=recompiler, 1=interpreter */
 	u8 PsxType; /* 0=ntsc, 1=pal */
-    u8 McdSlot1; /* mcd slot 1, mcd%03u.mcr */
-    u8 McdSlot2; /* mcd slot 2, mcd%03u.mcr */
+	u8 McdSlot1; /* mcd slot 1, mcd%03u.mcr */
+	u8 McdSlot2; /* mcd slot 2, mcd%03u.mcr */
 
 	//senquack - added Config.SpuIrq option from PCSX Rearmed/Reloaded:
 	boolean SpuIrq; /* 1=SPU IRQ always enabled (needed for audio in some games) */

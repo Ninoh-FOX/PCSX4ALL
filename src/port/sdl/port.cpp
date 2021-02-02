@@ -381,6 +381,9 @@ int config_load(const char *diskname)
 			if (value < 0 || value > 100)
 				value = 100;
 			Config.RumbleGain = value;
+		} else if (!strcmp(line, "AsyncCD")) {
+			sscanf(arg, "%d", &value);
+			Config.AsyncCD = value;
 		} else if (!strcmp(line, "RCntFix")) {
 			sscanf(arg, "%d", &value);
 			Config.RCntFix = value;
@@ -562,6 +565,7 @@ int config_save(const char *diskname)
 		   "AnalogArrow %d\n"
 		   "Analog_Mode %d\n"
 		   "RumbleGain %d\n"
+		   "AsyncCD %d\n"
 		   "RCntFix %d\n"
 		   "VSyncWA %d\n"
 		   "Cpu %d\n"
@@ -577,7 +581,7 @@ int config_save(const char *diskname)
 		   "FrameSkip %d\n"
 		   "VideoScaling %d\n",
 		   CONFIG_VERSION, Config.Xa, Config.Mdec, Config.PsxAuto, Config.Cdda,
-		   Config.HLE, Config.SlowBoot, Config.AnalogArrow, Config.AnalogMode, Config.RumbleGain,
+		   Config.HLE, Config.SlowBoot, Config.AnalogArrow, Config.AnalogMode, Config.RumbleGain, Config.AsyncCD,
 		   Config.RCntFix, Config.VSyncWA, Config.Cpu, Config.PsxType,
 		   Config.McdSlot1, Config.McdSlot2, Config.SpuIrq, Config.SyncAudio,
 		   Config.SpuUpdateFreq, Config.ForcedXAUpdates, Config.ShowFps,
@@ -1054,27 +1058,8 @@ const char *GetMemcardPath(int slot) {
 
 void update_memcards(int load_mcd) {
 	
-	if (Config.McdSlot1 == 0) {
-		if (string_is_empty(CdromId)) {
-			/* Fallback */
-			sprintf(McdPath1, "%s/%s", memcardsdir, "card1.mcd");
-		} else {
-			sprintf(McdPath1, "%s/%s.1.mcr", memcardsdir, CdromId);
-		}
-	} else {
-		sprintf(McdPath1, "%s/mcd%03d.mcr", memcardsdir, (int)Config.McdSlot1);
-	}
-	
-	if (Config.McdSlot2 == 0) {
-		if (string_is_empty(CdromId)) {
-			/* Fallback */
-			sprintf(McdPath2, "%s/%s", memcardsdir, "card2.mcd");
-		} else {
-			sprintf(McdPath2, "%s/%s.2.mcr", memcardsdir, CdromId);
-		}
-	} else {
-		sprintf(McdPath2, "%s/mcd%03d.mcr", memcardsdir, (int)Config.McdSlot2);
-	}
+	sprintf(McdPath1, "%s/mcd%03d.mcr", memcardsdir, (int) Config.McdSlot1);
+	sprintf(McdPath2, "%s/mcd%03d.mcr", memcardsdir, (int) Config.McdSlot2);
 	
 	if (load_mcd & 1)
 		LoadMcd(MCD1, McdPath1); //Memcard 1
@@ -1233,7 +1218,7 @@ int main (int argc, char **argv)
 	update_memcards(0);
 	strcpy(Config.PatchesDir, patchesdir);
 	strcpy(Config.BiosDir, biosdir);
-	strcpy(Config.Bios, "scph1001.bin");
+	strcpy(Config.Bios, "romw.bin");
 
 	Config.Xa=0; /* 0=XA enabled, 1=XA disabled */
 	Config.Mdec=0; /* 0=Black&White Mdecs Only Disabled, 1=Black&White Mdecs Only Enabled */
@@ -1249,6 +1234,7 @@ int main (int argc, char **argv)
 	Config.SlowBoot=0; /* 0=skip bios logo sequence on boot  1=show sequence (does not apply to HLE) */
 	Config.RCntFix=0; /* 1=Parasite Eve 2, Vandal Hearts 1/2 Fix */
 	Config.RumbleGain = 100; /* [0,100]-Rumble effect strength */
+	Config.AsyncCD=0; /* 0=Synchronous Cd access, 1=Asynchronous Cd access */
 	Config.VSyncWA=0; /* 1=InuYasha Sengoku Battle Fix */
 	Config.SpuIrq=0; /* 1=SPU IRQ always on, fixes some games */
 
@@ -1779,7 +1765,6 @@ int main (int argc, char **argv)
 	} else {
 		psxReset();
 	}
-
 
 	Rumble_Init();
 	joy_init();

@@ -322,14 +322,6 @@ void cdrLidSeekInterrupt()
 
 			/* Check whether this is *not* a multi-cd image */
 			if (cdrIsoMultidiskCount == 1) {
-				/* If we are using per-disk memory cards,
-				 * reload them */
-				if (Config.McdSlot1 == 0) {
-					update_memcards(1);
-				}
-				if (Config.McdSlot2 == 0) {
-					update_memcards(2);
-				}
 				/* If config overrides are enabled, update
 				 * CdromName */
 				if (config_override_enabled) {
